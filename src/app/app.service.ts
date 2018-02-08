@@ -11,20 +11,6 @@ export class AppService {
 
   }
 
-  getCompanyInfo() {
-    const headers = new Headers({
-      'Auth-Token': localStorage.getItem('token'),
-      'Content-Type': 'application/json'
-    });
-    const options = new RequestOptions({ headers: headers });
-
-    return this.http
-      .post('https://mcfpayapi.ca/api/v1/mgt/get_company_info/', {}, { headers: headers}
-      ).map((response: Response) => {
-        return response.json();
-      }).catch(this.handleError);
-  }
-
   login(model) {
     const headers = new Headers({
       'Content-Type': 'application/json'
