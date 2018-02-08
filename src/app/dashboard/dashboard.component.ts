@@ -20,13 +20,15 @@ import {ActivatedRoute, Router} from '@angular/router';
 export class DashboardComponent implements OnInit, AfterViewInit {
   page_num: number;
   new_merchant_id: any;
-  companyInfo: any = [];
+  restaurantList: any = [];
+  totalList: any = [];
   pageNumArray: any = [];
   page_size: number;
   newUser: any = false;
   i: any;
   keyword: any;
   deleteItem: any;
+  total_length: any;
   total_page: number;
   message: any = false;
   dataloded: any = false;
@@ -40,99 +42,60 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
 
   }
-  getMerchantByKeyword() {
-    this.cpyService.getMerchantByKeyword(this.keyword).subscribe(
-      event => {
-        this.companyInfo = event.ev_data.recs;
-        this.page_num = event.ev_data.page_num;
-        this.total_page = event.ev_data.total_page;
-        this.dataloded = true;
-      },
-      event => {
-        if (event.ev_error === 10011) {
-          alert('Your account has been logged in from another device.');
-        } else if (event.ev_error === 10001) {
-          alert('Token Expires. Please login again.');
-        }
-      }
-    );
-    setTimeout(() => {
-      this.getNumber();
-    }, 2000);
-  }
   getNumber() {
     return this.pageNumArray = new Array(this.total_page);
 
   }
   goToPage(i) {
-    this.page_num = i+1;
-    this.cpyService.getMerchants(i + 1).subscribe(
-      event => {
-        this.companyInfo = event.ev_data.recs;
+    this.restaurantList = [];
+    this.totalList.forEach((item, index) => {
+      if ( i * 10 <= index && index <= i * 10 + 9) {
+        this.restaurantList.push(item);
       }
-    );
+    });
   }
-  addNewMerchant() {
-    this.cpyService.addNewMerchant(this.new_merchant_id).subscribe(
-      event => {
-          this.message = true;
-      },
-      event => {
-        console.log(event.json());
-        alert('Duplicate MerchantID. Please check again or contact customer service');
+  getMerchantByKeyword() {
+    this.restaurantList = [];
+    this.totalList.forEach((item, index) => {
+      if (item.name === this.keyword) {
+        this.restaurantList.push(item);
       }
-    );
-    setTimeout(() => {
-      this.getMerchants();
-    }, 2000);
-  }
-  saveAccountID(item) {
-    localStorage.setItem('account_id', item.account_id);
-    localStorage.setItem('merchantname', item.display_name);
-    localStorage.setItem('merchantID', item.merchant_id);
-    this.router.navigate(['merchant']);
-  }
-  getMerchants() {
-    this.cpyService.getMerchants(this.page_num).subscribe(
-      event => {
-        this.companyInfo = event.ev_data.recs;
-        this.page_num = event.ev_data.page_num;
-        this.total_page = event.ev_data.total_page;
-        this.dataloded = true;
-      },
-      event => {
-        if (event.ev_error === 10011) {
-          alert('Your account has been logged in from another device.');
-        } else if (event.ev_error === 10001) {
-          alert('Token Expires. Please login again.');
-        }
-      }
-    );
+    });
     setTimeout(() => {
       this.getNumber();
     }, 2000);
-    console.log(this.pageNumArray);
   }
-  deleteMerchant(item) {
-    this.deleteItem = item;
+  saveAccountID(item) {
+    localStorage.setItem('rid', item.rid);
+    localStorage.setItem('name', item.name);
+    this.router.navigate(['merchant']);
   }
-  setMerchant() {
-    const item = this.deleteItem;
-    item.is_deleted = 1;
-    this.cpyService.setMerchant(item).subscribe(
+  getMerchants() {
+    this.cpyService.getMerchants().subscribe(
       event => {
         console.log(event);
-      },
-      event => {
-        if (event.ev_error === 10011) {
-          alert('Your account has been logged in from another device.');
-        } else if (event.ev_error === 10001) {
-          alert('Token Expires. Please login again.');
-        }
+        this.totalList = event.ea_data;
+        this.total_length = event.ea_data.length;
+        this.total_page = Math.ceil(this.total_length / 10);
+        this.totalList.forEach((item, index) => {
+          if (index <= 9) {
+            this.restaurantList.push(item);
+          }
+        });
+        // this.page_num = event.ev_data.page_num;
+        // this.total_page = event.ev_data.total_page;
+        this.dataloded = true;
       }
+      // event => {
+      //   if (event.ev_error === 10011) {
+      //     alert('Your account has been logged in from another device.');
+      //   } else if (event.ev_error === 10001) {
+      //     alert('Token Expires. Please login again.');
+      //   }
+      // }
     );
     setTimeout(() => {
-      this.getMerchants();
+      this.getNumber();
     }, 2000);
   }
 }

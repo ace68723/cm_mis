@@ -23,100 +23,45 @@
                                 <div class="m-section__content">
                                     <div style="display: inline-flex; margin-bottom:20px">
                                             <input class = "form-control m-input" type="text" placeholder="Search By Keyword" [(ngModel)]="keyword" style="margin-right:30px;width:200%">   
-                                            <button style="margin-right:30px"  class="btn btn-warning" (click) = 'getMerchantByKeyword()' >搜索</button>
-                                            <button  class="btn btn-warning" (click) = 'getMerchants()' >清空</button>
+                                            <button style="margin-right:30px"  class="btn btn-success" (click) = 'getMerchantByKeyword()' >搜索</button>
+                                            <button  class="btn btn-success" (click) = 'getMerchants()' >清空</button>
                                     </div>
                                     <table class="table m-table m-table--head-separator-primary" >
                                         <thead>
                                         <tr>
                                             <th>
-                                                Account ID
+                                                RID
                                             </th>
                                             <th>
-                                                Merchant Name
+                                                Name
                                             </th>
                                             <th>
-                                                Merchant Tel
+                                                菜单
                                             </th>
-                                            <th>
-                                                Merchant ID
-                                            </th>
-                                            <th>
-                                                Edit
-                                            </th>
-                                            <th>
-                                                    Delete
-                                                </th>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                            <tr  *ngFor="let item of companyInfo; index as i;trackBy: i" [attr.data-index]="i" >
+                                            <tr  *ngFor="let item of restaurantList; index as i;trackBy: i" [attr.data-index]="i" >
                                                 <td scope="row">
-                                                    {{item.account_id}}
+                                                    {{item.rid}}
                                                 </td>
                                                 <td>
-                                                    {{item.display_name}}
+                                                    {{item.name}}
                                                 </td>
                                                 <td>
-                                                    {{item.cell}}
-                                                </td>
-                                                <td>
-                                                    {{item.merchant_id}}
-                                                </td>
-        
-                                                <td>
-                                                    <button  class="btn btn-warning" (click) = 'saveAccountID(item)' >Details</button>
-                                                </td>
-                                                <td>
-                                                    <button data-toggle="modal" data-target="#m_modal_5_1" class="btn btn-danger" (click) = 'deleteMerchant(item)'>Delete</button>
+                                                    <button  class="btn btn-success" (click) = 'saveAccountID(item)' >查看/修改</button>
                                                 </td>
                                             </tr>
                                         </tbody>
                                     </table>
                                     <div style="display: inline-flex" *ngFor="let item of pageNumArray;  index as i;trackBy: i" [attr.data-index]="i">
-                                            <a  [class.some-class]="i+1 === page_num" style="margin-right:7px" class="btn btn-outline-warning m-btn m-btn--icon m-btn--icon-only" (click) = 'goToPage(i)'>
-                                                    <p style="height: 100%;
-                                                    margin-top: 27%;">{{i+1}}</p>
-                                            </a>
-                                    </div>
-                                </div>
-                                <div style="display:inline-flex;margin-top:20px">
-                                    <button class= "btn btn-warning" (click)= 'newUser = true;' style="margin-right:20px">Add New Merchant</button>
-                                    <button class= "btn btn-warning" (click)= 'newUser = false; new_merchant_id = ""'>Cancel</button>
-                                    <p *ngIf="message" style="color:#c49a6c;padding-top:1%;margin-left:20px;">Add New Merchant Successfully</p>
-                                 </div>
-                                 <br>
-
-                                 <div *ngIf="newUser" style="display:inline-flex; width:100%;margin-top:20px">
-                                    <p  style="padding-top:1%;margin-right:20px;font-weight:600; width:20%">New Merchant ID:</p>
-                                    <input class = "form-control m-input" type="text" [(ngModel)]="new_merchant_id" style="width:50%">   
-                                    <button class= "btn btn-warning" (click)= 'addNewMerchant()' style="margin-left:20px">添加</button>                      
+                                        <a  [class.some-class]="i+1 === page_num" style="margin-right:7px" class="btn btn-outline-warning m-btn m-btn--icon m-btn--icon-only" (click) = 'goToPage(i)'>
+                                                <p style="height: 100%;
+                                                margin-top: 27%;">{{i+1}}</p>
+                                        </a>
+                                     </div>
                                 </div>
                             <!--end: Datatable -->
-                            </div>
-                            <div class="modal fade" id="m_modal_5_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-sm" role="document" style="height: 100%;top: 30%;">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">
-                                                Delete The Merchant?
-                                            </h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">
-                                                    &times;
-                                                </span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-warning" data-dismiss="modal">
-                                                No
-                                            </button>
-                                            <button type="button" data-dismiss="modal" class="btn btn-danger" (click) = 'setMerchant()'>
-                                                Delete!
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>

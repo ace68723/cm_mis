@@ -1503,22 +1503,22 @@ fieldset[disabled] a.btn {
 
 .btn-warning {
   color: #2f3038;
-  background-color: #c49a6c;
-  border-color: #c49a6c; }
+  background-color: #ea7b21;
+  border-color: #ea7b21; }
   .btn-warning:hover {
     color: #2f3038;
-    background-color: #c49a6c;
-    border-color: #c49a6c; }
+    background-color: #ea7b21;
+    border-color: #ea7b21; }
   .btn-warning:focus, .btn-warning.focus {
     box-shadow: 0 0 0 3px rgba(255, 184, 34, 0.5); }
   .btn-warning.disabled, .btn-warning:disabled {
-    background-color: #c49a6c;
-    border-color: #c49a6c; }
+    background-color: #ea7b21;
+    border-color: #ea7b21; }
   .btn-warning:active, .btn-warning.active,
   .show > .btn-warning.dropdown-toggle {
-    background-color: #c49a6c;
+    background-color: #ea7b21;
     background-image: none;
-    border-color: #c49a6c; }
+    border-color: #ea7b21; }
 
 .btn-danger {
   color: #fff;
@@ -6986,7 +6986,7 @@ a.text-dark:focus, a.text-dark:hover {
     color: #f0f0f0; }
 
 .nav.nav-pills.nav-pills--success .nav-link.active {
-  background: #c49a6c;
+  background: #ea7b21;
   color: #2f3038 ; }
   .nav.nav-pills.nav-pills--success .nav-link.active i {
     color: #f0f0f0; }
@@ -8622,7 +8622,7 @@ body.m--skin-dark {
 .m-stack--demo.m-stack--hor .m-stack__demo-item {
   padding: 10px;
   border: 1px solid #eee;
-  background: #2f3038;
+  background: #ea7b21;
   font-weight: 500; }
 
 .m-grid.m-grid--hor:not(.m-grid--desktop):not(.m-grid--desktop-and-tablet):not(.m-grid--tablet):not(.m-grid--tablet-and-mobile):not(.m-grid--mobile) {
@@ -22304,7 +22304,7 @@ body.m-portlet--fullscreen {
 
 .m-table.m-table--head-separator-primary thead th {
   border-top: 0;
-  border-bottom: 1px solid #c49a6c ;
+  border-bottom: 1px solid #ea7b21 ;
   text-align: center;
   font-weight: 800; }
 
@@ -26925,7 +26925,7 @@ body.m-content--skin-light2 {
       .m-brand.m-brand--skin-dark .m-brand__tools .m-brand__icon:hover > i {
         color: #9193a9; }
   .m-brand.m-brand--skin-light {
-    background: #2f3038; }
+    background: #ea7b21; }
     .m-brand.m-brand--skin-light .m-brand__tools .m-brand__toggler span {
       background: #678098; }
       .m-brand.m-brand--skin-light .m-brand__tools .m-brand__toggler span::before, .m-brand.m-brand--skin-light .m-brand__tools .m-brand__toggler span::after {
@@ -26996,10 +26996,10 @@ body.m-content--skin-light2 {
 
 .m-page--wide .m-header,
 .m-page--fluid .m-header {
-  background-color: #2f3038; }
+  background-color: #ea7b21; }
 
 .m-page--boxed .m-header .m-header-head {
-  background-color: #2f3038; }
+  background-color: #ea7b21; }
 
 @media (min-width: 993px) {
   .m-header {
