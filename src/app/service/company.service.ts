@@ -64,13 +64,14 @@ export class CompanyService {
   }
 // type end
 // dish start
-getDishList(rid) {
+getDishList(rid, keyword) {
   const headers = new Headers({
     'Authortoken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiIxODc4NSIsImV4cGlyZWQiOjE1MDg4NzUyMDAsImxhc3Rsb2dpbiI6MTUwMjgyNDYwN30.jIbVCvagC6B3NFKgOPmLAeYeWIFRdOH8dsIRHhgiQBs',
     'Content-Type': 'application/json'
   });
   const body = {
-    'rid': 1
+    'rid': 5,
+    'key': keyword
   };
   const options = new RequestOptions({ headers: headers });
 
@@ -97,6 +98,23 @@ setDishList(data) {
 
   return this.http
     .post('http://norgta.com/api/manage/v1/set_dish', body, {headers: headers}
+    ).map((response: Response) => {
+      return response.json();
+    }).catch(this.handleError);
+}
+setDishStatus(data) {
+  const headers = new Headers({
+    'Authortoken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiIxODc4NSIsImV4cGlyZWQiOjE1MDg4NzUyMDAsImxhc3Rsb2dpbiI6MTUwMjgyNDYwN30.jIbVCvagC6B3NFKgOPmLAeYeWIFRdOH8dsIRHhgiQBs',
+    'Content-Type': 'application/json'
+  });
+  const body = {
+    'ds_id': data.ds_id,
+    'status': data.status
+  };
+  const options = new RequestOptions({ headers: headers });
+
+  return this.http
+    .post('http://norgta.com/api/manage/v1/set_dish_status', body, {headers: headers}
     ).map((response: Response) => {
       return response.json();
     }).catch(this.handleError);

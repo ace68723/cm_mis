@@ -26,12 +26,12 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#m_tabs_4_3" (click) = 'getDishList()'>
+                                    <a class="nav-link" data-toggle="tab" href="#m_tabs_4_3" (click) = 'getDishList();status = "dish" '>
                                         添加/删除菜单
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                        <a class="nav-link" data-toggle="tab" href="#m_tabs_4_4" (click) = 'initToppingList()'>
+                                        <a class="nav-link" data-toggle="tab" href="#m_tabs_4_4" (click) = 'initToppingList();status = "second" '>
                                             二级菜单
                                         </a>
                                 </li>
@@ -39,7 +39,7 @@
                                         <span class="m-list-search__form-input-wrapper" style = 'margin-right:20px'>
                                                 <input class = "form-control m-input" autocomplete="off" type="text" name="q" [(ngModel)]="keyword" placeholder="Search...">
                                         </span>
-                                        <button type="button" class="btn btn-primary" (click) = 'getToppingList(keyword)'>
+                                        <button type="button" class="btn btn-primary" (click) = 'search()'>
                                                 Search
                                         </button> 
                                 </div>
@@ -182,15 +182,14 @@
                                                     <td>
                                                         {{item.ds_price}}
                                                     </td>
-                                                    <td>
-                                                            <span style = 'font-weight:bold' *ngFor="let dish of item.tpgs" class="m-badge m-badge--danger m-badge--wide m-badge--rounded">
-                                                                    {{dish.tpg_name}}
-                                                            </span>
-                                                        
+                                                    <td>   
+                                                        <span style = 'font-weight:bold' *ngFor="let dish of item.tpgs" class="m-badge m-badge--danger m-badge--wide m-badge--rounded">
+                                                                {{dish.tpg_name}}
+                                                        </span>
                                                     </td>
                                                     <td style="justify-content: center;
                                                     align-items: center;">
-                                                        <input type="checkbox" [(ngModel)]="item.status" style = 'width:20px; height:20px'> {{item.status}}
+                                                        <input type="checkbox" [(ngModel)]="item.status" style = 'width:20px; height:20px' (ngModelChange)="setDishStatus(item)"> 
                                                     </td>
                                                     <td>
                                                           <button style ='width:25px; 

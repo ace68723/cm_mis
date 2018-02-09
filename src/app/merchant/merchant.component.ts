@@ -33,7 +33,8 @@ export class MerchantComponent implements OnInit, AfterViewInit {
   toppingList: any = [];
   name: any;
   typeOptions: any = [];
-  keyword: any;
+  status: any = 'dish';
+  keyword: any = '';
   constructor(private _script: ScriptLoaderService, private appService: AppService, private cpyService: CompanyService) {
 
   }
@@ -48,6 +49,16 @@ export class MerchantComponent implements OnInit, AfterViewInit {
     this._script.load('app-merchant',
         'assets/bootstrap-notify.js');
   }
+  addProp1(e) {
+         console.log(e);
+ }
+ search() {
+   if (this.status === 'dish') {
+     this.getDishList();
+   } else if (this.status === 'second') {
+    this.getToppingList(this.keyword);
+   }
+ }
 // init end
 // type start
   getDishRank() {
@@ -88,10 +99,18 @@ export class MerchantComponent implements OnInit, AfterViewInit {
     });
     console.log(rankList);
     this.cpyService.editDishRank(rankList).subscribe(
-     event => {
-       console.log(event);
-     });
-     this.getDishRank();
+      event => {
+        if (event.ev_error === 0) {
+          alert('添加成功');
+        }
+      },
+      event => {
+        alert('添加失败');
+      }
+    );
+     setTimeout(() => {
+      this.getDishRank();
+     }, 1000);
   }
   saveDishRank(item) {
     this.endRank = item.level;
@@ -138,21 +157,28 @@ export class MerchantComponent implements OnInit, AfterViewInit {
 
 // dish start
 getDishList() {
-  this.cpyService.getDishList(this.rid).subscribe(
+  this.cpyService.getDishList(this.rid, this.keyword).subscribe(
     event => {
-      this.dishList = event.ea_dishes;
-      this.dataLoded = true;
-      this.dishList.forEach(item => {
-        if (item.tpgs.length === 0) {
-          item.tpgs.push({});
-        }
-      });
+      if (event.ev_error === 0) {
+        this.dishList = event.ea_dishes;
+        this.dataLoded = true;
+        this.dishList.forEach(item => {
+          if (item.status === 0) {
+            item.status = true;
+          } else if (item.status === 1) {
+            item.status = false;
+          }
+        });
+      }
+
     },
     event => {
       if (event.ev_error === 10011) {
         alert('Your account has been logged in from another device.');
       } else if (event.ev_error === 10001) {
         alert('Token Expires. Please login again.');
+      } else {
+        alert('添加失败');
       }
     }
   );
@@ -175,16 +201,44 @@ setDishList() {
   });
   this.cpyService.setDishList(this.editDish).subscribe(
     event => {
-      console.log(event);
+      if (event.ev_error === 0) {
+        alert('添加成功');
+      }
+    },
+    event => {
+      alert('添加失败');
     }
   );
   this.keyword = '';
   this.toppingList = [];
-  this.getDishList();
+  setTimeout(() => {
+    this.getDishList();
+  }, 1000);
 }
 addNewDish() {
   this.editDishList = [];
   this.editDish = {};
+}
+setDishStatus(item) {
+  if (item.status === false) {
+    item.status = 1;
+  } else if (item.status === true) {
+    item.status = 0;
+  }
+
+  this.cpyService.setDishStatus(item).subscribe(
+    event => {
+      if (event.ev_error === 0) {
+        alert('修改成功');
+      }
+    },
+    event => {
+      alert('修改失败');
+    }
+  );
+  setTimeout(() => {
+    this.getDishList();
+  }, 1000);
 }
 // dish end
 
@@ -221,7 +275,7 @@ addNewTopping() {
   this.edittoppingList.push({
     isEditing: true,
     tp_name: '',
-    tp_price: ''
+    tp_price: '0.00'
   });
 }
 deleteToppings(item) {
@@ -230,7 +284,11 @@ deleteToppings(item) {
       console.log(event);
     }
   );
-  this.initToppingList();
+  setTimeout(() => {
+    this.initToppingList();
+
+  }, 1000);
+
 }
 deleteTopping(item) {
   this.edittoppingList = this.edittoppingList.filter(function(el) {
@@ -244,9 +302,16 @@ saveEditTopping() {
   this.editTopping.tps = this.edittoppingList;
   this.cpyService.saveToppingList(this.editTopping).subscribe(
     event => {
-      console.log(event);
-    }
+      alert('添加成功');
+    },
+    event => {
+      alert('添加失败');
+    },
   );
+  setTimeout(() => {
+    this.initToppingList();
+  }, 1000);
+
 }
 //  topping end
 }
