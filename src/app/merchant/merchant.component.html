@@ -22,17 +22,17 @@
                             <ul class="nav nav-pills nav-pills--success" role="tablist">
                                 <li class="nav-item">
                                     <a class="nav-link active" data-toggle="tab" href="#m_tabs_4_2" (click) = 'getDishRank()'>
-                                        菜单Rank修改
+                                        Category Rank
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#m_tabs_4_3" (click) = 'getDishList();status = "dish" '>
-                                        添加/删除菜单
+                                        Add/Delete Dish
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                         <a class="nav-link" data-toggle="tab" href="#m_tabs_4_4" (click) = 'initToppingList();status = "second" '>
-                                            二级菜单
+                                            Submenu
                                         </a>
                                 </li>
                                 <div style="display:inline-flex;margin-left: 37%;">
@@ -104,7 +104,7 @@
                                                                             height: 25px; 
                                                                             border-color: transparent;
                                                                             padding: 0; ' 
-                                                                            (click) = 'startEditing(item)'> 
+                                                                            (click) = 'DeleteCategory(item)'> 
                                                                             <img class="img-responsive" style ='width:100%; height: 100%' src="assets/icon/icon-delete.png"></button>  
                                                             </td>
             
@@ -144,7 +144,7 @@
                                                     Dish ID
                                                 </th>
                                                 <th>
-                                                    Dish Type
+                                                    Category
                                                 </th>
                                                 <th>
                                                     Name
@@ -172,7 +172,7 @@
                                                         {{item.int_no}}
                                                     </td>
                                                     <td>
-                                                       <select [(ngModel)]="item.dt_id" style="margin-right:20px" class="form-control m-input--fixed">
+                                                       <select disabled = true [(ngModel)]="item.dt_id" style="margin-right:20px" class="form-control m-input--fixed">
                                                           <option *ngFor="let option of typeOptions" [value]="option.dt_id">{{option.name}}</option>
                                                        </select>
                                                     </td>
@@ -189,7 +189,7 @@
                                                     </td>
                                                     <td style="justify-content: center;
                                                     align-items: center;">
-                                                        <input type="checkbox" [(ngModel)]="item.status" style = 'width:20px; height:20px' (ngModelChange)="setDishStatus(item)"> 
+                                                        <input type="checkbox" [(ngModel)]="item.status" style = 'width:20px; height:20px' (ngModelChange)="setDishStatus(item);item.status = !item.status"> 
                                                     </td>
                                                     <td>
                                                           <button style ='width:25px; 
@@ -238,8 +238,11 @@
                                                                 Topping Group
                                                             </th>
                                                             <th>
-                                                                Limit Amount
+                                                               Max Limit 
                                                             </th>
+                                                            <th>
+                                                                Min Limit 
+                                                                </th>
                                                             <th>
                                                                 Topping
                                                             </th>
@@ -261,7 +264,10 @@
                                                                     {{item.tpg_name}}
                                                                 </td>
                                                                 <td>
-                                                                    {{item.tpg_limit}}
+                                                                    {{item.tpg_max_limit}}
+                                                                </td>
+                                                                <td>
+                                                                     {{item.tpg_min_limit}}
                                                                 </td>
                                                                 <td  >
                                                                     <span *ngFor="let dish of item.tps" class="m-badge m-badge--danger m-badge--wide m-badge--rounded" style = 'margin-right:3px;font-weight:bold'>
@@ -314,17 +320,24 @@
                                     </div>
                                     <div class="modal-body">
                                         <div style= 'display:inline-flex; width:100%;justify-content:center;margin-bottom:20px'>
-                                                <p style = 'width:150px'>Topping Group</p>
-                                                <input type="text" class="form-control"  [(ngModel)]="editTopping.tpg_name">
-                                        </div>
-                                        <div style= 'display:inline-flex; width:100%;justify-content:center;margin-bottom:20px'>
                                                 <div style= 'display:inline-flex; width: 50%;margin-right:40px'>
-                                                        <p style = 'width:150px;margin-right:30px'>Limit Amount</p>
-                                                        <input type="text" class="form-control" [(ngModel)]="editTopping.tpg_limit">
+                                                        <p style = 'width:200px'>Topping Group</p>
+                                                        <input type="text" class="form-control"  [(ngModel)]="editTopping.tpg_name">
                                                 </div>
                                                 <div style= 'display:inline-flex;width: 50%'>
                                                         <p style = 'width:70px'>Note</p>
                                                         <input type="text" class="form-control" [(ngModel)]="editTopping.tpg_note">
+                                                </div>
+                                                
+                                        </div>
+                                        <div style= 'display:inline-flex; width:100%;justify-content:center;margin-bottom:20px'>
+                                                <div style= 'display:inline-flex; width: 50%;margin-right:40px'>
+                                                        <p style = 'width:150px;margin-right:30px'>MAX Limit</p>
+                                                        <input type="text" class="form-control" [(ngModel)]="editTopping.tpg_max_limit">
+                                                </div>
+                                                <div style= 'display:inline-flex;width: 50%'>
+                                                        <p style = 'width:150px'>MIN Limit</p>
+                                                        <input type="text" class="form-control" [(ngModel)]="editTopping.tpg_min_limit">
                                                 </div>
                                         </div>
                                         <div style="display:inline-flex; margin-bottom:20px">
@@ -400,7 +413,7 @@
                                                             <input type="text" class="form-control" [(ngModel)]="editDish.ds_name">
                                                     </div>
                                                     <div style= 'display:inline-flex;width: 50%'>
-                                                            <p style = 'width:70px'>ID</p>
+                                                            <p style = 'width:70px'>Dish ID</p>
                                                             <input type="text" class="form-control" [(ngModel)]="editDish.int_no">
                                                     </div>
                                             </div>

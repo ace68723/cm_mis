@@ -23,8 +23,8 @@
                                 <div class="m-section__content">
                                     <div style="display: inline-flex; margin-bottom:20px">
                                             <input class = "form-control m-input" type="text" placeholder="Search By Keyword" [(ngModel)]="keyword" style="margin-right:30px;width:200%">   
-                                            <button style="margin-right:30px"  class="btn btn-success" (click) = 'getMerchantByKeyword()' >搜索</button>
-                                            <button  class="btn btn-success" (click) = 'getMerchants()' >清空</button>
+                                            <button style="margin-right:30px"  class="btn btn-success" (click) = 'getMerchantByKeyword()' >Search</button>
+                                            <button  class="btn btn-success" (click) = 'getMerchants()' >Clear</button>
                                     </div>
                                     <table class="table m-table m-table--head-separator-primary" >
                                         <thead>
@@ -36,7 +36,7 @@
                                                 Name
                                             </th>
                                             <th>
-                                                菜单
+                                                Menu
                                             </th>
                                         </tr>
                                         </thead>
@@ -49,7 +49,7 @@
                                                     {{item.name}}
                                                 </td>
                                                 <td>
-                                                    <button  class="btn btn-success" (click) = 'saveAccountID(item)' >查看/修改</button>
+                                                    <button  class="btn btn-success" (click) = 'saveAccountID(item)' >Details</button>
                                                 </td>
                                             </tr>
                                         </tbody>

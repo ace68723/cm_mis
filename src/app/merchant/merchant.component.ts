@@ -91,10 +91,45 @@ export class MerchantComponent implements OnInit, AfterViewInit {
     this.dishRank.forEach(dish => {
       const data = {
         dt_id: 0,
+        name: '',
+        status: 0,
         level: 0
       };
       data.dt_id = dish.dt_id;
-      data.level = dish.level;
+      data.name = dish.name;
+      data.status = dish.status;
+      data.level = parseInt(dish.level, 10);
+      rankList.push(data);
+    });
+    console.log(rankList);
+    this.cpyService.editDishRank(rankList).subscribe(
+      event => {
+        if (event.ev_error === 0) {
+          alert('添加成功');
+        }
+      },
+      event => {
+        alert('添加失败');
+      }
+    );
+     setTimeout(() => {
+      this.getDishRank();
+     }, 1000);
+  }
+  DeleteCategory(item) {
+    item.status = 9;
+    const rankList = [];
+    this.dishRank.forEach(dish => {
+      const data = {
+        dt_id: 0,
+        name: '',
+        status: 0,
+        level: 0
+      };
+      data.dt_id = dish.dt_id;
+      data.name = dish.name;
+      data.status = dish.status;
+      data.level = parseInt(dish.level, 10);
       rankList.push(data);
     });
     console.log(rankList);
@@ -138,9 +173,7 @@ export class MerchantComponent implements OnInit, AfterViewInit {
     if (!item.isEditing) {
       item.isEditing = true;
     }
-    if (item.level) {
-      this.startRank = item.level;
-    }
+    this.startRank = item.level;
   }
   cancelEditing(item) {
       item.isEditing = false;
@@ -225,7 +258,6 @@ setDishStatus(item) {
   } else if (item.status === true) {
     item.status = 0;
   }
-
   this.cpyService.setDishStatus(item).subscribe(
     event => {
       if (event.ev_error === 0) {
