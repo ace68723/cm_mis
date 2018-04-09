@@ -20,31 +20,85 @@ export class MerchantComponent implements OnInit, AfterViewInit {
   @ViewChild('ippp') ippp: ElementRef;
   @ViewChild('ipppp') ipppp: ElementRef;
   rid: any;
+  tpkeyword: any = '';
   dataLoded: any = false;
+  success: any = false;
+  level: any = false;
+  fail: any = false;
   startRank: any;
   endRank: any;
+  dishShow: any = false;
+  totalList: any = [];
+  filterList: any = [];
   editDish: any = {};
   editTopping: any = {};
+  tpListCopy: any = [];
   editing: any = false;
   dishRank: any = [];
   editDishList: any = [];
   edittoppingList: any = [];
   dishList: any = [];
+  searchList: any = [];
+  searchTpList: any = [];
   toppingList: any = [];
   name: any;
+  new_name: any;
+  i: any;
   typeOptions: any = [];
   status: any = 'dish';
   keyword: any = '';
+  total_length: any;
+  total_page: number;
+  pageNumArray: any = [];
+  page_num: number = 1;
+  filter: any = false;
+  j: number;
   constructor(private _script: ScriptLoaderService, private appService: AppService, private cpyService: CompanyService) {
 
   }
 // init
-
   ngOnInit() {
       this.rid = localStorage.getItem('rid');
       this.name = localStorage.getItem('name');
       this.getDishRank();
+      this.getDishList();
+      this.getToppingList();
   }
+  addToTpg(topping) {
+    if(!this.editDish.tpgs) {
+      this.editDish.tpgs = [];
+    }
+    topping.selected = true;
+    this.editDish.tpgs.push({
+      tpg_id: topping.tpg_id,
+      tpg_name: topping.tpg_name
+    });
+  }
+  checkImage(topping) {
+    // const test = this.editDishList.includes({
+    //   tpg_id: topping.tpg_id,
+    //   tpg_name: topping.tpg_name,
+    // });
+    // console.log(test);
+    // return test;
+    // for (let j = 0, len = this.editDishList.length; j < len; j++) {
+    //   if (this.editDishList[j].tpg_id === topping.tpg_id) {
+    //     break;
+    //   }     console.log(j);
+
+    // }
+  //   try {
+
+  // console.log(this.toppingList)
+  // console.log(this.editDish)
+  //   return this.editDish.tpgs.forEach(item => {
+  //     if (item.tpg_id === topping.tpg_id) {
+  //       return true;
+  //     }
+  //     return false;
+  //   });
+  }
+
   ngAfterViewInit() {
     this._script.load('app-merchant',
         'assets/bootstrap-notify.js');
@@ -52,14 +106,8 @@ export class MerchantComponent implements OnInit, AfterViewInit {
   addProp1(e) {
          console.log(e);
  }
- search() {
-   if (this.status === 'dish') {
-     this.getDishList();
-   } else if (this.status === 'second') {
-    this.getToppingList(this.keyword);
-   }
- }
 // init end
+
 // type start
   getDishRank() {
       this.typeOptions = [];
@@ -86,7 +134,50 @@ export class MerchantComponent implements OnInit, AfterViewInit {
         }
       );
   }
+  addDishRank() {
+    const lo_data = {
+      name: this.new_name,
+      rid: this.rid
+    };
+    this.cpyService.addDishRank(lo_data).subscribe(
+      event => {
+        if (event.ev_error === 0) {
+          this.new_name = '';
+          this.success = true;
+          setTimeout(() => {
+            this.success = false;
+          }, 2000);
+        }
+      },
+      event => {
+        this.fail = true;
+          setTimeout(() => {
+            this.fail = false;
+          }, 3000);
+      }
+    );
+    setTimeout(() => {
+      this.getDishRank();
+     }, 1000);
+  }
   saveToDatabase() {
+    const newLevel = [];
+    this.dishRank.forEach(element => {
+      if (element.level !== 0) {
+        newLevel.push(element);
+      }
+    });
+    for (let i = 0 ; i < newLevel.length ; i ++) {
+      for (let j = i + 1 ; j < newLevel.length ; j ++) {
+         if (newLevel[i].level === newLevel[j].level) {
+          this.level = true;
+          setTimeout(() => {
+            this.level = false;
+          }, 2000);
+            return;
+         }
+      }
+    }
     const rankList = [];
     this.dishRank.forEach(dish => {
       const data = {
@@ -101,15 +192,20 @@ export class MerchantComponent implements OnInit, AfterViewInit {
       data.level = parseInt(dish.level, 10);
       rankList.push(data);
     });
-    console.log(rankList);
     this.cpyService.editDishRank(rankList).subscribe(
       event => {
         if (event.ev_error === 0) {
-          alert('添加成功');
+          this.success = true;
+          setTimeout(() => {
+            this.success = false;
+          }, 1500);
         }
       },
       event => {
-        alert('添加失败');
+        this.fail = true;
+          setTimeout(() => {
+            this.fail = false;
+          }, 3000);
       }
     );
      setTimeout(() => {
@@ -132,42 +228,32 @@ export class MerchantComponent implements OnInit, AfterViewInit {
       data.level = parseInt(dish.level, 10);
       rankList.push(data);
     });
-    console.log(rankList);
     this.cpyService.editDishRank(rankList).subscribe(
       event => {
         if (event.ev_error === 0) {
-          alert('添加成功');
+          this.success = true;
+          setTimeout(() => {
+            this.success = false;
+          }, 1500);
         }
       },
       event => {
-        alert('添加失败');
+        this.fail = true;
+        setTimeout(() => {
+          this.fail = false;
+        }, 3000);
+        setTimeout(() => {
+          this.getDishRank();
+         }, 1000);
       }
     );
-     setTimeout(() => {
-      this.getDishRank();
-     }, 1000);
+
   }
   saveDishRank(item) {
-    this.endRank = item.level;
-    if (this.endRank < this.startRank) {
-      this.dishRank.forEach(dish => {
-        if (dish.level >= this.endRank && dish.level < this.startRank) {
-          dish.level = parseInt(dish.level, 10) + 1;
-        }
-      });
-      item.level = item.level - 1;
-      this.cancelEditing(item);
-    } else if (this.endRank > this.startRank) {
-      this.dishRank.forEach(dish => {
-        if (dish.level > this.startRank && dish.level <= this.endRank) {
-          dish.level = parseInt(dish.level, 10) - 1;
-        }
-      });
-      item.level = item.level + 1;
-      this.cancelEditing(item);
-    }
+    this.cancelEditing(item);
   }
 // type end
+
 // edit start
   startEditing(item) {
     if (!item.isEditing) {
@@ -189,21 +275,43 @@ export class MerchantComponent implements OnInit, AfterViewInit {
 // edit end
 
 // dish start
-getDishList() {
+findByType(item) {
+  this.keyword = '';
+  this.filter = true;
+  this.filterList = [];
+  this.dishList.forEach(dish => {
+    if (dish.dt_id === item.dt_id) {
+      this.filterList.push(dish);
+    }
+   });
+}
+searchDishList() {
+  this.filter = false;
+  this.searchList = [];
+  this.dishList.forEach(dish => {
+   if (dish.ds_name.includes(this.keyword)) {
+     this.searchList.push(dish);
+   }
+  });
+}
+async getDishList() {
+  this.page_num = 1;
+  this.dishList = [];
   this.cpyService.getDishList(this.rid, this.keyword).subscribe(
     event => {
       if (event.ev_error === 0) {
         this.dishList = event.ea_dishes;
-        this.dataLoded = true;
-        this.dishList.forEach(item => {
-          if (item.status === 0) {
-            item.status = true;
-          } else if (item.status === 1) {
-            item.status = false;
+        this.dishList.forEach(dish => {
+          if (dish.status === 1) {
+            dish.status = false;
+          } else if (dish.status === 0) {
+            dish.status = true;
           }
         });
+        event.ea_dishes.sort(function(a, b){
+          return parseInt(a.dt_id, 10)  - parseInt(b.dt_id, 10);
+        });
       }
-
     },
     event => {
       if (event.ev_error === 10011) {
@@ -211,42 +319,89 @@ getDishList() {
       } else if (event.ev_error === 10001) {
         alert('Token Expires. Please login again.');
       } else {
-        alert('添加失败');
+        this.fail = true;
+        setTimeout(() => {
+          this.fail = false;
+        }, 3000);
       }
     }
   );
+  return;
 }
 getDishDetail(item) {
+  this.toppingList.forEach(element => {
+    delete element.selected;
+  });
+  this.dishShow = true;
   this.editDish = item;
   this.editDishList = this.editDish.tpgs;
+  for (let i = 0; i < this.editDishList.length; i ++) {
+   const tpIndex =  this.toppingList.findIndex(
+    x => x.tpg_id === this.editDishList[i].tpg_id);
+    this.toppingList[tpIndex].selected = true;
+  }
+}
+submit() {
+  console.log('try');
 }
 addTopping(item) {
   this.editDishList.push(item);
 }
 setDishList() {
-  console.log(this.editDish);
+  const goTopage = this.page_num - 1;
   this.editDish.tpgs = this.editDishList;
   this.editDish.rid = this.rid;
   this.editDishList.forEach(item => {
-    delete item.tpg_limit;
+    delete item.tpg_max_limit;
+    delete item.tpg_min_limit;
     delete item.tpg_note;
     delete item.tps;
   });
-  this.cpyService.setDishList(this.editDish).subscribe(
-    event => {
-      if (event.ev_error === 0) {
-        alert('添加成功');
+  if (this.editDish.ds_id) {
+    this.cpyService.setDishList(this.editDish).subscribe(
+      event => {
+        if (event.ev_error === 0) {
+          this.success = true;
+          setTimeout(() => {
+            this.success = false;
+          }, 1500);
+        }
+      },
+      event => {
+        this.fail = true;
+          setTimeout(() => {
+            this.fail = false;
+          }, 3000);
+        setTimeout(() => {
+          this.getDishList();
+       }, 1000);
       }
-    },
-    event => {
-      alert('添加失败');
-    }
-  );
+    );
+  } else {
+    this.cpyService.addDishList(this.editDish).subscribe(
+      event => {
+        if (event.ev_error === 0) {
+          this.success = true;
+          setTimeout(() => {
+            this.success = false;
+          }, 1500);
+          return;
+        }
+      },
+      event => {
+        this.fail = true;
+          setTimeout(() => {
+            this.fail = false;
+          }, 3000);
+        setTimeout(() => {
+          this.getDishList();
+       }, 1000);
+      }
+    );
+  }
+
   this.keyword = '';
-  this.toppingList = [];
-  setTimeout(() => {
-    this.getDishList();
-  }, 1000);
+
 }
 addNewDish() {
   this.editDishList = [];
@@ -261,89 +416,154 @@ setDishStatus(item) {
   this.cpyService.setDishStatus(item).subscribe(
     event => {
       if (event.ev_error === 0) {
-        alert('修改成功');
+        this.success = true;
+          setTimeout(() => {
+            this.success = false;
+          }, 1500);
       }
     },
     event => {
-      alert('修改失败');
+      this.fail = true;
+          setTimeout(() => {
+            this.fail = false;
+          }, 3000);
+      setTimeout(() => {
+        this.getDishList();
+      }, 1000);
     }
   );
-  setTimeout(() => {
-    this.getDishList();
-  }, 1000);
+
+}
+deleteDish(item) {
+  this.cpyService.deleteDish(item).subscribe(
+    event => {
+      if (event.ev_error === 0) {
+        this.success = true;
+          setTimeout(() => {
+            this.success = false;
+          }, 1500);
+      }
+    },
+    event => {
+      setTimeout(() => {
+        this.getDishList();
+      }, 1000);
+      this.fail = true;
+          setTimeout(() => {
+            this.fail = false;
+          }, 3000);
+    }
+  );
+}
+deleteToppingGroup(item) {
+  item.selected = false;
+  this.editDishList = this.editDishList.filter(function(el) {
+    return el.tpg_id !== item.tpg_id;
+});
+
 }
 // dish end
 
 // topping start
-initToppingList() {
-  this.keyword = '';
-  this.getToppingList(this.keyword);
-}
-getToppingList(keyword) {
-  this.cpyService.getToppingList(keyword).subscribe(
-    event => {
-      this.toppingList = event.ea_tpgs;
-      this.dataLoded = true;
-      this.toppingList.forEach(item => {
-        if (item.tps.length === 0) {
-          item.tps.push({});
+  getToppingList() {
+    this.toppingList = [];
+    this.cpyService.getToppingList(this.rid).subscribe(
+      event => {
+        this.toppingList = event.ea_tpgs;
+        this.tpListCopy = this.toppingList.slice();
+        this.dataLoded = true;
+        this.toppingList.forEach(item => {
+          if (item.tps.length === 0) {
+            item.tps.push({});
+          }
+        });
+      },
+      event => {
+        if (event.ev_error === 10011) {
+          alert('Your account has been logged in from another device.');
+        } else if (event.ev_error === 10001) {
+          alert('Token Expires. Please login again.');
         }
-      });
-    },
-    event => {
-      if (event.ev_error === 10011) {
-        alert('Your account has been logged in from another device.');
-      } else if (event.ev_error === 10001) {
-        alert('Token Expires. Please login again.');
       }
-    }
-  );
-}
-getToppings(item) {
-  this.editTopping = item;
-  this.edittoppingList = this.editTopping.tps;
-}
-addNewTopping() {
-  this.edittoppingList.push({
-    isEditing: true,
-    tp_name: '',
-    tp_price: '0.00'
+    );
+  }
+  getToppings(item) {
+    this.editTopping = item;
+    this.edittoppingList = this.editTopping.tps;
+  }
+  addNewTopping() {
+    this.toppingList = [];
+    this.edittoppingList.push({
+      isEditing: true,
+      tp_name: '',
+      tp_price: '0.00'
+    });
+  }
+  deleteToppings(item) {
+    this.cpyService.deleteTopping(item).subscribe(
+      event => {
+        if (event.ev_error === 0) {
+          this.success = true;
+          setTimeout(() => {
+            this.success = false;
+          }, 2000);
+        }
+      },
+      event => {
+        this.fail = true;
+          setTimeout(() => {
+            this.fail = false;
+          }, 3000);
+      }
+    );
+    setTimeout(() => {
+      this.getToppingList();
+
+    }, 1000);
+
+  }
+  deleteTopping(item) {
+    this.edittoppingList = this.edittoppingList.filter(function(el) {
+      return el.tp_id !== item.tp_id;
   });
-}
-deleteToppings(item) {
-  this.cpyService.deleteTopping(item).subscribe(
-    event => {
-      console.log(event);
+  }
+  searchTopList() {
+    this.searchTpList = [];
+    this.toppingList.forEach(dish => {
+     if (dish.tpg_name.includes(this.tpkeyword)) {
+       this.searchTpList.push(dish);
+     }
+    });
+  }
+  saveEditTopping() {
+    this.edittoppingList.forEach(item => {
+      delete item.isEditing;
+    });
+    this.editTopping.tps = this.edittoppingList;
+    if (!this.editTopping.tpg_note) {
+      this.editTopping.tpg_note = '';
     }
-  );
-  setTimeout(() => {
-    this.initToppingList();
+    this.cpyService.saveToppingList(this.rid, this.editTopping).subscribe(
+      event => {
+        this.success = true;
+          setTimeout(() => {
+            this.success = false;
+          }, 1500);
+        this.editTopping = {};
+        this.edittoppingList = [];
+      },
+      event => {
+        this.fail = true;
+          setTimeout(() => {
+            this.fail = false;
+          }, 3000);
+      },
+    );
+    setTimeout(() => {
+      this.getToppingList();
+    }, 1000);
 
-  }, 1000);
-
-}
-deleteTopping(item) {
-  this.edittoppingList = this.edittoppingList.filter(function(el) {
-    return el.tp_id !== item.tp_id;
-});
-}
-saveEditTopping() {
-  this.edittoppingList.forEach(item => {
-    delete item.isEditing;
-  });
-  this.editTopping.tps = this.edittoppingList;
-  this.cpyService.saveToppingList(this.editTopping).subscribe(
-    event => {
-      alert('添加成功');
-    },
-    event => {
-      alert('添加失败');
-    },
-  );
-  setTimeout(() => {
-    this.initToppingList();
-  }, 1000);
-
-}
+  }
+  
 //  topping end
 }

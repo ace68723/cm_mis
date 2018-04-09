@@ -22,11 +22,17 @@
                                 
                                 <div class="m-section__content">
                                     <div style="display: inline-flex; margin-bottom:20px">
-                                            <input class = "form-control m-input" type="text" placeholder="Search By Keyword" [(ngModel)]="keyword" style="margin-right:30px;width:200%">   
-                                            <button style="margin-right:30px"  class="btn btn-success" (click) = 'getMerchantByKeyword()' >Search</button>
-                                            <button  class="btn btn-success" (click) = 'getMerchants()' >Clear</button>
+                                            <span class="m-list-search__form-input-wrapper" style = 'margin-right:20px'>
+                                                    <input class = "form-control m-input" 
+                                                    autocomplete="off" 
+                                                    type="text" 
+                                                    name="q" 
+                                                    [(ngModel)]="keyword" 
+                                                    placeholder="Search By Name"
+                                                    (ngModelChange)="searchRestaurantList()">
+                                            </span>
                                     </div>
-                                    <table class="table m-table m-table--head-separator-primary" >
+                                    <table *ngIf="this.keyword.length !==0" class="table m-table m-table--head-separator-primary" >
                                         <thead>
                                         <tr>
                                             <th>
@@ -41,7 +47,7 @@
                                         </tr>
                                         </thead>
                                         <tbody>
-                                            <tr  *ngFor="let item of restaurantList; index as i;trackBy: i" [attr.data-index]="i" >
+                                            <tr  *ngFor="let item of searchList; index as i;trackBy: i" [attr.data-index]="i" >
                                                 <td scope="row">
                                                     {{item.rid}}
                                                 </td>
@@ -54,12 +60,34 @@
                                             </tr>
                                         </tbody>
                                     </table>
-                                    <div style="display: inline-flex" *ngFor="let item of pageNumArray;  index as i;trackBy: i" [attr.data-index]="i">
-                                        <a  [class.some-class]="i+1 === page_num" style="margin-right:7px" class="btn btn-outline-warning m-btn m-btn--icon m-btn--icon-only" (click) = 'goToPage(i)'>
-                                                <p style="height: 100%;
-                                                margin-top: 27%;">{{i+1}}</p>
-                                        </a>
-                                     </div>
+                                    <table *ngIf="this.keyword.length ===0" class="table m-table m-table--head-separator-primary" >
+                                            <thead>
+                                            <tr>
+                                                <th>
+                                                    RID
+                                                </th>
+                                                <th>
+                                                    Name
+                                                </th>
+                                                <th>
+                                                    Menu
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr  *ngFor="let item of restaurantList; index as i;trackBy: i" [attr.data-index]="i" >
+                                                    <td scope="row">
+                                                        {{item.rid}}
+                                                    </td>
+                                                    <td>
+                                                        {{item.name}}
+                                                    </td>
+                                                    <td>
+                                                        <button  class="btn btn-success" (click) = 'saveAccountID(item)' >Details</button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                 </div>
                             <!--end: Datatable -->
                             </div>

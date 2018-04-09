@@ -18,15 +18,16 @@ import {ActivatedRoute, Router} from '@angular/router';
 })
 
 export class DashboardComponent implements OnInit, AfterViewInit {
-  page_num: number;
+  page_num: number = 1;
   new_merchant_id: any;
   restaurantList: any = [];
   totalList: any = [];
   pageNumArray: any = [];
+  searchList: any = [];
   page_size: number;
   newUser: any = false;
   i: any;
-  keyword: any;
+  keyword: any = '';
   deleteItem: any;
   total_length: any;
   total_page: number;
@@ -42,28 +43,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
 
   }
-  getNumber() {
-    return this.pageNumArray = new Array(this.total_page);
-
-  }
-  goToPage(i) {
-    this.restaurantList = [];
-    this.totalList.forEach((item, index) => {
-      if ( i * 10 <= index && index <= i * 10 + 9) {
-        this.restaurantList.push(item);
-      }
+  searchRestaurantList() {
+    this.searchList = [];
+    this.restaurantList.forEach(restaurant => {
+     if (restaurant.name.includes(this.keyword)) {
+       this.searchList.push(restaurant);
+     }
     });
-  }
-  getMerchantByKeyword() {
-    this.restaurantList = [];
-    this.totalList.forEach((item, index) => {
-      if (item.name === this.keyword) {
-        this.restaurantList.push(item);
-      }
-    });
-    setTimeout(() => {
-      this.getNumber();
-    }, 2000);
   }
   saveAccountID(item) {
     localStorage.setItem('rid', item.rid);
@@ -71,32 +57,12 @@ export class DashboardComponent implements OnInit, AfterViewInit {
     this.router.navigate(['merchant']);
   }
   getMerchants() {
+    this.restaurantList = [];
     this.cpyService.getMerchants().subscribe(
       event => {
-        console.log(event);
-        this.totalList = event.ea_data;
-        this.total_length = event.ea_data.length;
-        this.total_page = Math.ceil(this.total_length / 10);
-        this.totalList.forEach((item, index) => {
-          if (index <= 9) {
-            this.restaurantList.push(item);
-          }
-        });
-        // this.page_num = event.ev_data.page_num;
-        // this.total_page = event.ev_data.total_page;
-        this.dataloded = true;
+        this.restaurantList = event.ea_data;
       }
-      // event => {
-      //   if (event.ev_error === 10011) {
-      //     alert('Your account has been logged in from another device.');
-      //   } else if (event.ev_error === 10001) {
-      //     alert('Token Expires. Please login again.');
-      //   }
-      // }
     );
-    setTimeout(() => {
-      this.getNumber();
-    }, 2000);
   }
 }
 

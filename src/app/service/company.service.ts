@@ -13,13 +13,13 @@ export class CompanyService {
 // init & handle error start
   getMerchants() {
     const headers = new Headers({
-      'Authortoken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiIxODc4NSIsImV4cGlyZWQiOjE1MjE4MzUyMDAsImxhc3Rsb2dpbiI6MTUxNTc3Njg5NX0.73wP3ohvwVK5dGRVySQQpqiv-7JlJKUIxHYC5tNryFI',
+      'Authortoken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiIxODc4NSIsImV4cGlyZWQiOjE1MDg4NzUyMDAsImxhc3Rsb2dpbiI6MTUwMjgyNDYwN30.jIbVCvagC6B3NFKgOPmLAeYeWIFRdOH8dsIRHhgiQBs',
       'Content-Type': 'application/json'
     });
     const options = new RequestOptions({ headers: headers });
 
     return this.http
-      .get('https://chanmao.us/api/v1/rr_info', { headers: headers}
+      .post('https://chanmao.us/api/manage/v2/get_rr_list', {}, { headers: headers}
       ).map((response: Response) => {
         return response.json();
       }).catch(this.handleError);
@@ -30,18 +30,35 @@ export class CompanyService {
 // init & handle error end
 
 // type start
+  addDishRank(data) {
+    const headers = new Headers({
+      'Authortoken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiIxODc4NSIsImV4cGlyZWQiOjE1MDg4NzUyMDAsImxhc3Rsb2dpbiI6MTUwMjgyNDYwN30.jIbVCvagC6B3NFKgOPmLAeYeWIFRdOH8dsIRHhgiQBs',
+      'Content-Type': 'application/json'
+    });
+    const body = {
+      'rid': parseInt(data.rid, 10),
+      'name': data.name,
+    };
+    const options = new RequestOptions({ headers: headers });
+
+    return this.http
+      .post('https://chanmao.us/api/manage/v2/add_dish_cat', body, {headers: headers}
+      ).map((response: Response) => {
+        return response.json();
+      }).catch(this.handleError);
+  }
   getDishRank(rid) {
     const headers = new Headers({
       'Authortoken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiIxODc4NSIsImV4cGlyZWQiOjE1MDg4NzUyMDAsImxhc3Rsb2dpbiI6MTUwMjgyNDYwN30.jIbVCvagC6B3NFKgOPmLAeYeWIFRdOH8dsIRHhgiQBs',
       'Content-Type': 'application/json'
     });
     const body = {
-      'iv_rid': 5
+      'iv_rid': parseInt(rid, 10),
     };
     const options = new RequestOptions({ headers: headers });
 
     return this.http
-      .post('https://norgta.com/api/manage/v1/get_dish_cat_rank', body, {headers: headers}
+      .post('https://chanmao.us/api/manage/v2/get_dish_cat_rank', body, {headers: headers}
       ).map((response: Response) => {
         return response.json();
       }).catch(this.handleError);
@@ -57,7 +74,7 @@ export class CompanyService {
     const options = new RequestOptions({ headers: headers });
 
     return this.http
-      .put('https://norgta.com/api/manage/v1/edit_dish_cat_rank', body, {headers: headers}
+      .put('https://chanmao.us/api/manage/v2/edit_dish_cat_rank', body, {headers: headers}
       ).map((response: Response) => {
         return response.json();
       }).catch(this.handleError);
@@ -70,18 +87,40 @@ getDishList(rid, keyword) {
     'Content-Type': 'application/json'
   });
   const body = {
-    'rid': 5,
+    'rid': parseInt(rid, 10),
     'key': keyword
   };
   const options = new RequestOptions({ headers: headers });
 
   return this.http
-    .post('http://norgta.com/api/manage/v1/get_dishes', body, {headers: headers}
+    .post('https://chanmao.us/api/manage/v2/get_dishes', body, {headers: headers}
     ).map((response: Response) => {
       return response.json();
     }).catch(this.handleError);
 }
 setDishList(data) {
+  const headers = new Headers({
+    'Authortoken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiIxODc4NSIsImV4cGlyZWQiOjE1MDg4NzUyMDAsImxhc3Rsb2dpbiI6MTUwMjgyNDYwN30.jIbVCvagC6B3NFKgOPmLAeYeWIFRdOH8dsIRHhgiQBs',
+    'Content-Type': 'application/json'
+  });
+  const body = {
+    'ds_id': parseInt(data.ds_id, 10),
+    'rid': parseInt(data.rid, 10),
+    'int_no': data.int_no,
+    'dt_id': parseInt(data.dt_id, 10),
+    'ds_name': data.ds_name,
+    'ds_price': data.ds_price,
+    'tpgs': data.tpgs
+  };
+  const options = new RequestOptions({ headers: headers });
+
+  return this.http
+    .post('https://chanmao.us/api/manage/v2/set_dish', body, {headers: headers}
+    ).map((response: Response) => {
+      return response.json();
+    }).catch(this.handleError);
+}
+addDishList(data) {
   const headers = new Headers({
     'Authortoken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiIxODc4NSIsImV4cGlyZWQiOjE1MDg4NzUyMDAsImxhc3Rsb2dpbiI6MTUwMjgyNDYwN30.jIbVCvagC6B3NFKgOPmLAeYeWIFRdOH8dsIRHhgiQBs',
     'Content-Type': 'application/json'
@@ -97,7 +136,7 @@ setDishList(data) {
   const options = new RequestOptions({ headers: headers });
 
   return this.http
-    .post('http://norgta.com/api/manage/v1/set_dish', body, {headers: headers}
+    .post('https://chanmao.us/api/manage/v2/set_dish', body, {headers: headers}
     ).map((response: Response) => {
       return response.json();
     }).catch(this.handleError);
@@ -114,7 +153,23 @@ setDishStatus(data) {
   const options = new RequestOptions({ headers: headers });
 
   return this.http
-    .post('http://norgta.com/api/manage/v1/set_dish_status', body, {headers: headers}
+    .post('https://chanmao.us/api/manage/v2/set_dish_status', body, {headers: headers}
+    ).map((response: Response) => {
+      return response.json();
+    }).catch(this.handleError);
+}
+deleteDish(data) {
+  const headers = new Headers({
+    'Authortoken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiIxODc4NSIsImV4cGlyZWQiOjE1MDg4NzUyMDAsImxhc3Rsb2dpbiI6MTUwMjgyNDYwN30.jIbVCvagC6B3NFKgOPmLAeYeWIFRdOH8dsIRHhgiQBs',
+    'Content-Type': 'application/json'
+  });
+  const body = {
+    'ds_id': data.ds_id,
+  };
+  const options = new RequestOptions({ headers: headers });
+
+  return this.http
+    .post('https://chanmao.us/api/manage/v2/delete_dish', body, {headers: headers}
     ).map((response: Response) => {
       return response.json();
     }).catch(this.handleError);
@@ -122,38 +177,40 @@ setDishStatus(data) {
 // dish end
 
 // topping start
-getToppingList(keyword) {
+getToppingList(rid) {
   const headers = new Headers({
     'Authortoken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiIxODc4NSIsImV4cGlyZWQiOjE1MDg4NzUyMDAsImxhc3Rsb2dpbiI6MTUwMjgyNDYwN30.jIbVCvagC6B3NFKgOPmLAeYeWIFRdOH8dsIRHhgiQBs',
     'Content-Type': 'application/json'
   });
   const body = {
-    'key': keyword
+    'rid': parseInt(rid, 10),
   };
   const options = new RequestOptions({ headers: headers });
 
   return this.http
-    .post('http://norgta.com/api/manage/v1/find_tpgs', body, {headers: headers}
+    .post('https://chanmao.us/api/manage/v2/find_tpgs', body, {headers: headers}
     ).map((response: Response) => {
       return response.json();
     }).catch(this.handleError);
 }
-saveToppingList(data) {
+saveToppingList(rid, data) {
   const headers = new Headers({
     'Authortoken': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1aWQiOiIxODc4NSIsImV4cGlyZWQiOjE1MDg4NzUyMDAsImxhc3Rsb2dpbiI6MTUwMjgyNDYwN30.jIbVCvagC6B3NFKgOPmLAeYeWIFRdOH8dsIRHhgiQBs',
     'Content-Type': 'application/json'
   });
   const body = {
+    'rid': parseInt(rid, 10),
     'tpg_id': data.tpg_id ,
     'tpg_name': data.tpg_name,
     'tpg_note': data.tpg_note,
-    'tpg_limit': parseInt(data.tpg_limit, 10),
+    'tpg_max_limit': parseInt(data.tpg_max_limit, 10),
+    'tpg_min_limit': parseInt(data.tpg_min_limit, 10),
      'tps': data.tps
   };
   const options = new RequestOptions({ headers: headers });
 
   return this.http
-    .post('http://norgta.com/api/manage/v1/set_tpg', body, {headers: headers}
+    .post('https://chanmao.us/api/manage/v2/set_tpg', body, {headers: headers}
     ).map((response: Response) => {
       return response.json();
     }).catch(this.handleError);
@@ -169,7 +226,7 @@ deleteTopping(data) {
   const options = new RequestOptions({ headers: headers });
 
   return this.http
-    .post('http://norgta.com/api/manage/v1/delete_tpg', body, {headers: headers}
+    .post('https://chanmao.us/api/manage/v2/delete_tpg', body, {headers: headers}
     ).map((response: Response) => {
       return response.json();
     }).catch(this.handleError);

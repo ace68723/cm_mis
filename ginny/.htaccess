@@ -1,0 +1,4 @@
+uthType Basic
+AuthName "Restricted Files"
+AuthUserFile /var/www/norgta.com/public/ginny/.htpasswd
+Require valid-user
